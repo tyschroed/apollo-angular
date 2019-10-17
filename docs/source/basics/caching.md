@@ -5,22 +5,12 @@ description: A guide to customizing and directly accessing your Apollo cache
 
 ## InMemoryCache
 
-`apollo-cache-inmemory` is the default cache implementation for Apollo Client 2.0. `InMemoryCache` is a normalized data store that supports all of Apollo Client 1.0's features without the dependency on Redux.
+`InMemoryCache` is the default cache implementation for Apollo Client 2.0. It is a normalized data store that supports all of Apollo Client 1.0's features without the dependency on Redux.
 
 In some instances, you may need to manipulate the cache directly, such as updating the store after a mutation. We'll cover some common use cases [here](#recipes).
 
-### Installation
-
-```bash
-npm install apollo-cache-inmemory --save
-```
-
-After installing the package, you'll want to initialize the cache constructor. Then, you can pass in your newly created cache to ApolloClient.
-
 ```ts
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { Apollo } from 'apollo-angular';
-import { HttpLink } from 'apollo-angular-link-http';
+import { Apollo, InMemoryCache, HttpLink } from 'apollo-angular';
 
 @NgModule({ ... })
 class AppModule {
@@ -81,7 +71,7 @@ const cache = new InMemoryCache({
 
 To interact directly with your cache, you can use the Apollo Client class methods readQuery, readFragment, writeQuery, and writeFragment. These methods are available to us via the [`DataProxy` interface](https://www.apollographql.com/docs/react/api/apollo-client/#ApolloClient.mutate). An instance of ApolloClient can be accessed by `getClient()` method of `Apollo` Service.
 
-Any code demonstration in the following sections will assume that we have already initialized an instance of `ApolloClient` and that we have imported the `gql` tag from `graphql-tag`.
+Any code demonstration in the following sections will assume that we have already initialized an instance of `ApolloClient` and that we have imported the `gql` tag from `apollo-angular`.
 
 ### readQuery
 
@@ -264,4 +254,3 @@ Here are some common situations where you would need to access the cache directl
 ### Server side rendering
 
 If you would like to learn more about server side rendering, please check out more in depth guide [here](/recipes/server-side-rendering/).
-

@@ -51,7 +51,6 @@ jspm_packages
 
 # Packages lock
 package-lock.json
-yarn.lock
 packages/**/package-lock.json
 packages/**/yarn.lock
 
@@ -60,3 +59,6 @@ packages/*/npm/
 
 # docs
 docs/public/docs
+
+# Verdaccio
+.verdaccio

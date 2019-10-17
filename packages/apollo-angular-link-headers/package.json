@@ -1,14 +1,22 @@
 {
   "name": "apollo-angular-link-headers",
   "description": "An Apollo Link to easily transform headers from being a key-value object to an instance of HttpHeaders. Great combination with apollo-angular-link-http.",
-  "author": "Kamil Kisiela <kamil.kisiela@gmail.com> (http://github.com/kamilkisiela/)",
+  "author": {
+    "name": "Kamil Kisiela",
+    "email": "kamil.kisiela@gmail.com",
+    "url": "https://github.com/kamilkisiela/"
+  },
   "license": "MIT",
   "sideEffects": false,
   "main": "build/bundles/ngApolloLinkHeaders.umd.js",
   "module": "build/fesm5/ngApolloLinkHeaders.js",
   "typings": "build/ngApolloLinkHeaders.d.ts",
-  "version": "1.4.0",
-  "repository": "https://github.com/apollographql/apollo-angular/tree/master/packages/apollo-angular-link-headers",
+  "version": "2.0.0-alpha.9",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apollographql/apollo-angular",
+    "directory": "packages/apollo-angular-link-headers"
+  },
   "keywords": [
     "apollo",
     "graphql",
@@ -18,23 +26,22 @@
     "build": "ng-packagr -p ng-package.js",
     "test": "yarn test-only",
     "test-only": "jest --config jest.config.js",
-    "deploy": "yarn build && npm publish build"
+    "deploy": "yarn build && npm publish build --tag next"
   },
   "peerDependencies": {
-    "@angular/common": "^6.0.0 || ^7.0.0 || ^8.0.0",
-    "apollo-link": "^1.0.0"
+    "@angular/common": "^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0 || ^9.0.0-rc.0",
+    "@angular/core": "^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0 || ^9.0.0-rc.0",
+    "@apollo/client": "^3.0.0-beta.19"
   },
   "devDependencies": {
-    "@angular/common": "8.2.14",
-    "@angular/core": "8.2.14",
-    "@types/graphql": "14.5.0",
-    "@types/jest": "24.9.1",
-    "apollo-link": "1.2.13",
-    "graphql": "14.5.8",
-    "graphql-tag": "2.10.1",
-    "jest": "24.9.0",
-    "ng-packagr": "5.7.1",
-    "ts-jest": "25.0.0",
-    "typescript": "3.5.3"
+    "@angular/common": "9.0.0-rc.11",
+    "@angular/core": "9.0.0-rc.11",
+    "@apollo/client": "3.0.0-beta.33",
+    "@types/jest": "25.1.1",
+    "graphql": "14.6.0",
+    "jest": "25.1.0",
+    "ng-packagr": "9.0.0-rc.7",
+    "ts-jest": "25.2.0",
+    "typescript": "3.7.5"
   }
 }

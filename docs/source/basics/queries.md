@@ -16,7 +16,7 @@ can also put into your Apollo Client code.
 
 When we are using a basic query, we can use the `Apollo.watchQuery` method in a
 very simple way. We simply need to parse our query into a GraphQL document using
-the `graphql-tag` library.
+the `graphql-tag` library (comes with `apollo-angular`).
 
 For instance, in GitHunt, we want to display the current user (if logged in) in
 the `Profile` component:
@@ -24,8 +24,7 @@ the `Profile` component:
 ```ts
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Apollo } from 'apollo-angular';
-import gql from 'graphql-tag';
+import { Apollo, gql } from 'apollo-angular';
 
 // We use the gql tag to parse our query string into a query document
 const CurrentUserForProfile = gql`
@@ -177,9 +176,8 @@ of the property you want to get from `data`.
 
 ```ts
 import {Component, OnInit} from '@angular/core';
-import {Apollo} from 'apollo-angular';
+import {Apollo, gql} from 'apollo-angular';
 import {Observable} from 'rxjs';
-import gql from 'graphql-tag';
 
 const FeedQuery = gql`
   query Feed {
@@ -234,10 +232,9 @@ What's really interesting is that, because of this, you can avoid using `SelectP
 
 ```ts
 import {Component, OnInit} from '@angular/core';
-import {Apollo} from 'apollo-angular';
+import {Apollo, gql} from 'apollo-angular';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import gql from 'graphql-tag';
 
 const FeedQuery = gql`
   query Feed {

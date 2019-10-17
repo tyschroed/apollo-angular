@@ -11,8 +11,7 @@ Apollo Client uses the ultra flexible [Apollo Link](https://www.apollographql.co
 If your app is browser based and you are using cookies for login and session management with a backend, it is very easy to tell your network interface to send the cookie along with every request.
 
 ```ts
-import { Apollo } from 'apollo-angular';
-import { HttpLink } from 'apollo-angular-link-http';
+import { Apollo, HttpLink } from 'apollo-angular';
 
 @NgModule({ ... })
 class AppModule {
@@ -46,10 +45,7 @@ In `graphql.module.ts`:
 ```ts
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { ApolloModule, Apollo, APOLLO_OPTIONS } from 'apollo-angular';
-import { HttpLinkModule, HttpLink } from 'apollo-angular-link-http';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { ApolloLink } from 'apollo-link';
+import { ApolloModule, Apollo, APOLLO_OPTIONS, HttpLinkModule, HttpLink, InMemoryCache, ApolloLink } from 'apollo-angular';
 
 const uri = '/graphql';
 
@@ -132,8 +128,7 @@ The easiest way to ensure that the UI and store state reflects the current user'
 Another option is to reload the page, which will have a similar effect.
 
 ```ts
-import { Apollo } from 'apollo-angular';
-import gql from 'graphql-tag';
+import { Apollo, gql } from 'apollo-angular';
 
 const PROFILE_QUERY = gql`
   query CurrentUserForLayout {

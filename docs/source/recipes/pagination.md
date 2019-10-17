@@ -20,8 +20,7 @@ Offset based pagination - also called numbered pages - is a very common pattern,
 Here is an example with numbered pages taken from [GitHunt](https://github.com/apollographql/githunt-angular):
 
 ```ts
-import { Apollo, QueryRef } from 'apollo-angular';
-import gql from 'graphql-tag';
+import { Apollo, QueryRef, gql } from 'apollo-angular';
 
 const feedQuery = gql`
   query Feed($type: FeedType!, $offset: Int, $limit: Int) {

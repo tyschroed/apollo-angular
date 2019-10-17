@@ -1,12 +1,5 @@
-import {
-  Operation,
-  ApolloLink,
-  FetchResult,
-  Observable,
-  // Observer,
-} from 'apollo-link';
-
 import {print} from 'graphql';
+import {Operation, ApolloLink, FetchResult, LinkObservable} from '../../src';
 
 export interface MockedResponse {
   request: any;
@@ -53,7 +46,7 @@ export class MockLink extends ApolloLink {
       );
     }
 
-    return new Observable<FetchResult>(observer => {
+    return new LinkObservable<FetchResult>((observer: any) => {
       let timer = setTimeout(
         () => {
           if (error) {

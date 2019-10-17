@@ -97,8 +97,7 @@ What if we want to immediately subscribe to the data we just wrote to the cache?
 
 ```ts
 import {Component, OnInit, Input} from '@angular/core';
-import {Apollo} from 'apollo-angular';
-import gql from 'graphql-tag';
+import {Apollo, gql} from 'apollo-angular';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 
@@ -183,8 +182,7 @@ Let's learn how to trigger our `toggleTodo` mutation from our component:
 
 ```ts
 import {Component, Input} from '@angular/core';
-import {Apollo} from 'apollo-angular';
-import gql from 'graphql-tag';
+import {Apollo, gql} from 'apollo-angular';
 
 const TOGGLE_TODO = gql`
   mutation ToggleTodo($id: Int!) {
@@ -233,8 +231,7 @@ Querying the Apollo cache is similar to querying your GraphQL server. The only d
 
 ```ts
 import {Component, OnInit} from '@angular/core';
-import {Apollo} from 'apollo-angular';
-import gql from 'graphql-tag';
+import {Apollo, gql} from 'apollo-angular';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 
@@ -333,7 +330,7 @@ While `apollo-link-state` achieved some of the goals of local state handling, th
 
 Updating your application to use Apollo Client's local state management features, instead of `apollo-link-state`, is fairly straightforward. The necessary steps are outlined below.
 
-1. Including `apollo-link-state` as a dependency, and importing it to use `withClientState`, is no longer necessary. You can remove the `apollo-link-state` dependency since local state management is included with `apollo-client` >= 2.5.0.
+1. Including `apollo-link-state` as a dependency, and importing it to use `withClientState`, is no longer necessary. You can remove the `apollo-link-state` dependency since local state management is included with `@apollo/client` >= 2.5.0.
 
 2. Using `withClientState` is no longer supported. The following
 

@@ -29,23 +29,17 @@ const uri = 'https://o5x5jzoo7z.sse.codesandbox.io/graphql'; //our test Graphql 
 If you want to setup Apollo without the help of Angular Schematics, first, let's install some packages:
 
 ```bash
-npm install --save apollo-angular \
-  apollo-angular-link-http \
-  apollo-link \
-  apollo-client \
-  apollo-cache-inmemory \
-  graphql-tag \
+npm install --save
+  apollo-angular \
+  @apollo/client \
   graphql
 ```
 
-- `apollo-client`: Where the magic happens
+- `@apollo/client`: Where the magic happens
 - `apollo-angular`: Bridge between Angular and Apollo Client
-- `apollo-cache-inmemory`: Our recommended cache
-- `apollo-angular-link-http`: An Apollo Link for remote data fetching
 - `graphql`: Second most important package
-- `graphql-tag`: Parses your strings to GraphQL documents
 
-The `apollo-client` package requires `AsyncIterable` so make sure your tsconfig.json includes `esnext.asynciterable`:
+The `@apollo/client` package requires `AsyncIterable` so make sure your tsconfig.json includes `esnext.asynciterable`:
 
 ```json
 {
@@ -66,9 +60,7 @@ In our `app.module.ts` file use `ApolloModule` and `APOLLO_OPTIONS` token to con
 
 ```ts
 import { HttpClientModule } from "@angular/common/http";
-import { ApolloModule, APOLLO_OPTIONS } from "apollo-angular";
-import { HttpLinkModule, HttpLink } from "apollo-angular-link-http";
-import { InMemoryCache } from "apollo-cache-inmemory";
+import { ApolloModule, APOLLO_OPTIONS, HttpLinkModule, HttpLink, InMemoryCache } from "apollo-angular";
 
 @NgModule({
   imports: [
@@ -95,8 +87,8 @@ export class AppModule {}
 
 Take a closer look what we did there:
 
-1. With `apollo-angular-link-http` and `HttpLink` service we connect our client to an external GraphQL Server
-1. Thanks to `apollo-cache-inmemory` and `InMemoryCache` we have a place to store data in
+1. With `HttpLink` service we connect our client to an external GraphQL Server
+1. Thanks to `InMemoryCache` we have a place to store data in
 1. `APOLLO_OPTIONS` provides options to Apollo Client
 
 Apollo's HttpLink requires `HttpClient` so that's why we also used `HttpClientModule` from `@angular/common/http`.
@@ -105,9 +97,9 @@ Apollo's HttpLink requires `HttpClient` so that's why we also used `HttpClientMo
 
 Apollo Client has a pluggable network interface layer, which can let you configure how queries are sent over HTTP, or replace the whole network part with something completely custom, like a websocket transport, mocked server data, or anything else you can imagine.
 
-One Link that you already have in your application is called `apollo-angular-link-http` which uses HTTP to send your queries.
+One Link that you already have in your application is called `HttpLink` which uses HTTP to send your queries.
 
-`apollo-cache-inmemory` is the default cache implementation for Apollo Client 2.0. InMemoryCache is a normalized data store that supports all of Apollo Client 1.0’s features without the dependency on Redux.
+`InMemoryCache` is the default cache implementation for Apollo Client 2.0. InMemoryCache is a normalized data store that supports all of Apollo Client 1.0’s features without the dependency on Redux.
 
 - [Explore more the Network Layer of Apollo](/basics/network-layer/)
 - [Read more about caching](/basics/caching/)
@@ -118,7 +110,7 @@ Once all is hooked up, you're ready to start requesting data with `Apollo` servi
 
 `Apollo` is an Angular service exported from `apollo-angular` to share GraphQL data with your UI.
 
-First, pass your GraphQL query wrapped in the `gql` function (from `graphql-tag`) to the `query` property in the `Apollo.watchQuery` method, in your component.
+First, pass your GraphQL query wrapped in the `gql` function (from `apollo-angular`) to the `query` property in the `Apollo.watchQuery` method, in your component.
 The `Apollo` service is a regular angular service that you familiar with, data are being streamed through Observables. Same here.
 
 The `watchQuery` method returns a `QueryRef` object which has the `valueChanges`
@@ -137,8 +129,7 @@ If you want to see how easy it is to fetch data from a GraphQL server with Apoll
 
 ```ts
 import {Component, OnInit} from '@angular/core';
-import {Apollo} from 'apollo-angular';
-import gql from 'graphql-tag';
+import {Apollo, gql} from 'apollo-angular';
 
 @Component({
   selector: 'exchange-rates',

@@ -7,26 +7,27 @@ import {
   FetchMoreOptions,
   SubscribeToMoreOptions,
   UpdateQueryOptions,
-  ApolloCurrentResult,
-} from 'apollo-client';
+  ApolloCurrentQueryResult,
+} from '@apollo/client/core';
 import {Observable, from} from 'rxjs';
+import {startWith, share} from 'rxjs/operators';
 
 import {wrapWithZone, fixObservable} from './utils';
-import {WatchQueryOptions, R} from './types';
-import {startWith} from 'rxjs/operators';
+import {WatchQueryOptions, EmptyObject} from './types';
 
-export class QueryRef<T, V = R> {
-  public valueChanges: Observable<ApolloQueryResult<T>>;
-  public options: ObservableQuery<T, V>['options'];
-  public queryId: ObservableQuery<T, V>['queryId'];
-  public variables: V;
+export class QueryRef<TData, TVariables = EmptyObject> {
+  public valueChanges: Observable<ApolloQueryResult<TData>>;
+  public options: ObservableQuery<TData, TVariables>['options'];
 
   constructor(
-    private obsQuery: ObservableQuery<T, V>,
+    private obsQuery: ObservableQuery<TData, TVariables>,
     ngZone: NgZone,
-    options: WatchQueryOptions<V>,
+    options: WatchQueryOptions<TVariables>,
   ) {
-    const wrapped = wrapWithZone(from(fixObservable(this.obsQuery)), ngZone);
+    const wrapped = wrapWithZone(
+      from(fixObservable(this.obsQuery)),
+      ngZone,
+    ).pipe(share());
 
     this.valueChanges = options.useInitialLoading
       ? wrapped.pipe(
@@ -38,20 +39,35 @@ export class QueryRef<T, V = R> {
           }),
         )
       : wrapped;
-    this.queryId = this.obsQuery.queryId;
   }
 
   // ObservableQuery's methods
 
-  public result(): Promise<ApolloQueryResult<T>> {
+  public get queryId(): ObservableQuery<TData, TVariables>['queryId'] {
+    return this.obsQuery.queryId;
+  }
+  public get queryName(): ObservableQuery<TData, TVariables>['queryName'] {
+    return this.obsQuery.queryName;
+  }
+  public get variables(): TVariables {
+    return this.obsQuery.variables;
+  }
+
+  public result(): Promise<ApolloQueryResult<TData>> {
     return this.obsQuery.result();
   }
 
-  public currentResult(): ApolloCurrentResult<T> {
-    return this.obsQuery.currentResult();
+  public getCurrentResult(): ApolloCurrentQueryResult<TData> {
+    return this.obsQuery.getCurrentResult();
   }
 
-  public getLastResult(): ApolloQueryResult<T> {
+  public isDifferentFromLastResult(
+    newResult: ApolloQueryResult<TData>,
+  ): boolean {
+    return this.obsQuery.isDifferentFromLastResult(newResult);
+  }
+
+  public getLastResult(): ApolloQueryResult<TData> {
     return this.obsQuery.getLastResult();
   }
 
@@ -63,25 +79,29 @@ export class QueryRef<T, V = R> {
     return this.obsQuery.resetLastResults();
   }
 
-  public refetch(variables?: V): Promise<ApolloQueryResult<T>> {
+  public refetch(variables?: TVariables): Promise<ApolloQueryResult<TData>> {
     return this.obsQuery.refetch(variables);
   }
 
-  public fetchMore<K extends keyof V>(
-    fetchMoreOptions: FetchMoreQueryOptions<V, K> & FetchMoreOptions<T, V>,
-  ): Promise<ApolloQueryResult<T>> {
+  public fetchMore<K extends keyof TVariables>(
+    fetchMoreOptions: FetchMoreQueryOptions<TVariables, K> &
+      FetchMoreOptions<TData, TVariables>,
+  ): Promise<ApolloQueryResult<TData>> {
     return this.obsQuery.fetchMore(fetchMoreOptions);
   }
 
-  public subscribeToMore<MT = any, MV = R>(
-    options: SubscribeToMoreOptions<T, MV, MT>,
+  public subscribeToMore<TMoreData = any, TMoreVariables = EmptyObject>(
+    options: SubscribeToMoreOptions<TData, TMoreVariables, TMoreData>,
   ): () => void {
-    // XXX: there's a bug in apollo-client typings
+    // XXX: there's a bug in @apollo/client typings
     // it should not inherit types from ObservableQuery
     return this.obsQuery.subscribeToMore(options as any);
   }
   public updateQuery(
-    mapFn: (previousQueryResult: T, options: UpdateQueryOptions<V>) => T,
+    mapFn: (
+      previousQueryResult: TData,
+      options: UpdateQueryOptions<TVariables>,
+    ) => TData,
   ): void {
     return this.obsQuery.updateQuery(mapFn);
   }
@@ -99,7 +119,7 @@ export class QueryRef<T, V = R> {
   }
 
   public setVariables(
-    variables: V,
+    variables: TVariables,
     tryFetch: boolean = false,
     fetchResults = true,
   ) {

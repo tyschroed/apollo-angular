@@ -7,55 +7,72 @@ import {
   SubscriptionOptions,
   ApolloClientOptions,
   ObservableQuery,
-} from 'apollo-client';
-import {FetchResult} from 'apollo-link';
+  FetchResult,
+} from '@apollo/client/core';
 import {Observable, from} from 'rxjs';
 
 import {QueryRef} from './QueryRef';
 import {
   WatchQueryOptions,
   ExtraSubscriptionOptions,
-  R,
+  EmptyObject,
   NamedOptions,
+  Flags,
 } from './types';
-import {APOLLO_OPTIONS, APOLLO_NAMED_OPTIONS} from './tokens';
-import {fromPromise, wrapWithZone, fixObservable} from './utils';
+import {APOLLO_OPTIONS, APOLLO_NAMED_OPTIONS, APOLLO_FLAGS} from './tokens';
+import {fromPromise, wrapWithZone, fixObservable, pickFlag} from './utils';
 
 export class ApolloBase<TCacheShape = any> {
+  private useInitialLoading: boolean;
+
   constructor(
     protected ngZone: NgZone,
+    protected flags?: Flags,
     protected _client?: ApolloClient<TCacheShape>,
-  ) {}
+  ) {
+    this.useInitialLoading = pickFlag(flags, 'useInitialLoading', false);
+  }
 
-  public watchQuery<T, V = R>(options: WatchQueryOptions<V>): QueryRef<T, V> {
-    return new QueryRef<T, V>(
-      this.client.watchQuery<T, V>({...options}) as ObservableQuery<T, V>,
+  public watchQuery<TData, TVariables = EmptyObject>(
+    options: WatchQueryOptions<TVariables>,
+  ): QueryRef<TData, TVariables> {
+    return new QueryRef<TData, TVariables>(
+      this.ensureClient.watchQuery<TData, TVariables>({
+        ...options,
+      }) as ObservableQuery<TData, TVariables>,
       this.ngZone,
-      options,
+      {
+        useInitialLoading: this.useInitialLoading,
+        ...options,
+      },
     );
   }
 
-  public query<T, V = R>(
-    options: QueryOptions<V>,
-  ): Observable<ApolloQueryResult<T>> {
-    return fromPromise<ApolloQueryResult<T>>(() =>
-      this.client.query<T, V>({...options}),
+  public query<TData, TVariables = EmptyObject>(
+    options: QueryOptions<TVariables>,
+  ): Observable<ApolloQueryResult<TData>> {
+    return fromPromise<ApolloQueryResult<TData>>(() =>
+      this.ensureClient.query<TData, TVariables>({...options}),
     );
   }
 
-  public mutate<T, V = R>(
-    options: MutationOptions<T, V>,
-  ): Observable<FetchResult<T>> {
-    return fromPromise<FetchResult<T>>(() =>
-      this.client.mutate<T, V>({...options}),
+  public mutate<TData, TVariables = EmptyObject>(
+    options: MutationOptions<TData, TVariables>,
+  ): Observable<FetchResult<TData>> {
+    return fromPromise<FetchResult<TData>>(() =>
+      this.ensureClient.mutate<TData, TVariables>({...options}),
     );
   }
 
-  public subscribe<T, V = R>(
-    options: SubscriptionOptions<V>,
+  public subscribe<TData, TVariables = EmptyObject>(
+    options: SubscriptionOptions<TVariables>,
     extra?: ExtraSubscriptionOptions,
-  ): Observable<FetchResult<T>> {
-    const obs = from(fixObservable(this.client.subscribe<T, V>({...options})));
+  ): Observable<FetchResult<TData>> {
+    const obs = from(
+      fixObservable(
+        this.ensureClient.subscribe<TData, TVariables>({...options}),
+      ),
+    );
 
     return extra && extra.useZone !== true
       ? obs
@@ -64,6 +81,7 @@ export class ApolloBase<TCacheShape = any> {
 
   /**
    * Get an access to an instance of ApolloClient
+   * @deprecated use `apollo.client` instead
    */
   public getClient() {
     return this._client;
@@ -73,9 +91,27 @@ export class ApolloBase<TCacheShape = any> {
    * Set a new instance of ApolloClient
    * Remember to clean up the store before setting a new client.
    *
+   * @deprecated use `apollo.client = client` instead
    * @param client ApolloClient instance
    */
   public setClient(client: ApolloClient<TCacheShape>) {
+    this.client = client;
+  }
+
+  /**
+   * Get an access to an instance of ApolloClient
+   */
+  public get client(): ApolloClient<TCacheShape> {
+    return this._client;
+  }
+
+  /**
+   * Set a new instance of ApolloClient
+   * Remember to clean up the store before setting a new client.
+   *
+   * @param client ApolloClient instance
+   */
+  public set client(client: ApolloClient<TCacheShape>) {
     if (this._client) {
       throw new Error('Client has been already defined');
     }
@@ -83,14 +119,10 @@ export class ApolloBase<TCacheShape = any> {
     this._client = client;
   }
 
-  private get client(): ApolloClient<TCacheShape> {
-    this.beforeEach();
+  private get ensureClient() {
+    this.checkInstance();
 
     return this._client;
-  }
-
-  private beforeEach(): void {
-    this.checkInstance();
   }
 
   private checkInstance(): void {
@@ -100,7 +132,9 @@ export class ApolloBase<TCacheShape = any> {
   }
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class Apollo extends ApolloBase<any> {
   private map: Map<string, ApolloBase<any>> = new Map<
     string,
@@ -115,8 +149,9 @@ export class Apollo extends ApolloBase<any> {
     @Optional()
     @Inject(APOLLO_NAMED_OPTIONS)
     apolloNamedOptions?: NamedOptions,
+    @Optional() @Inject(APOLLO_FLAGS) flags?: Flags,
   ) {
-    super(_ngZone);
+    super(_ngZone, flags);
 
     if (apolloOptions) {
       this.createDefault(apolloOptions);
@@ -194,7 +229,11 @@ export class Apollo extends ApolloBase<any> {
     }
     this.map.set(
       name,
-      new ApolloBase(this._ngZone, new ApolloClient<TCacheShape>(options)),
+      new ApolloBase(
+        this._ngZone,
+        this.flags,
+        new ApolloClient<TCacheShape>(options),
+      ),
     );
   }
 

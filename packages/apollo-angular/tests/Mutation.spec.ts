@@ -2,9 +2,8 @@ import {setupAngular} from './_setup';
 
 import {Injectable} from '@angular/core';
 import {TestBed, inject} from '@angular/core/testing';
-import gql from 'graphql-tag';
 
-import {Mutation, Apollo} from '../src';
+import {Mutation, Apollo, gql} from '../src';
 
 const mutation = gql`
   mutation addHero($name: String) {

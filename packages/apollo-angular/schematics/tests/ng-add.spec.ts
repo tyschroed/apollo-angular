@@ -23,6 +23,7 @@ describe('ng-add', () => {
       .runSchematicAsync('ng-add', {}, appTree)
       .toPromise();
     const packageJsonPath = '/package.json';
+
     expect(tree.files).toContain(packageJsonPath);
 
     const packageJson = JSON.parse(getFileContent(tree, packageJsonPath));
@@ -82,5 +83,17 @@ describe('ng-add', () => {
     ).compilerOptions;
 
     expect(compilerOptions.lib).toContain('esnext.asynciterable');
+  });
+
+  test('should enable allowSyntheticDefaultImports in tsconfig.json', async () => {
+    const tree = await runner
+      .runSchematicAsync('ng-add', {}, appTree)
+      .toPromise();
+    const rootModulePath = '/tsconfig.json';
+    const compilerOptions: CompilerOptions = JSON.parse(
+      getFileContent(tree, rootModulePath),
+    ).compilerOptions;
+
+    expect(compilerOptions.allowSyntheticDefaultImports).toBe(true);
   });
 });

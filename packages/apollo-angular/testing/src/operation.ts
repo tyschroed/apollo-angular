@@ -1,5 +1,8 @@
-import {ApolloError} from 'apollo-client';
-import {Operation as LinkOperation, FetchResult} from 'apollo-link';
+import {
+  ApolloError,
+  Operation as LinkOperation,
+  FetchResult,
+} from 'apollo-angular';
 import {GraphQLError, ExecutionResult} from 'graphql';
 import {Observer} from 'rxjs';
 

@@ -1,5 +1,4 @@
 import {Tree, SchematicsException} from '@angular-devkit/schematics';
-
 import {getJsonFile} from '.';
 
 export function getMainPath(host: Tree, name?: string) {

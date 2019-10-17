@@ -7,22 +7,22 @@ import {
   SubscriptionOptionsAlone,
   ExtraSubscriptionOptions,
   SubscriptionResult,
-  R,
+  EmptyObject,
 } from './types';
 
 @Injectable()
-export class Subscription<T = any, V = R> {
+export class Subscription<TData = any, TVariables = EmptyObject> {
   public readonly document: DocumentNode;
   public client = 'default';
 
   constructor(protected apollo: Apollo) {}
 
   public subscribe(
-    variables?: V,
-    options?: SubscriptionOptionsAlone<V>,
+    variables?: TVariables,
+    options?: SubscriptionOptionsAlone<TVariables>,
     extra?: ExtraSubscriptionOptions,
-  ): Observable<SubscriptionResult<T>> {
-    return this.apollo.use(this.client).subscribe<T, V>(
+  ): Observable<SubscriptionResult<TData>> {
+    return this.apollo.use(this.client).subscribe<TData, TVariables>(
       {
         ...options,
         variables,

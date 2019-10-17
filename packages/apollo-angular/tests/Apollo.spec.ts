@@ -1,16 +1,18 @@
 import {setupAngular} from './_setup';
 
-import gql from 'graphql-tag';
-
-import {ApolloLink} from 'apollo-link';
 import {NgZone} from '@angular/core';
-import {TestBed, inject, async} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {Observable, of} from 'rxjs';
 import {mergeMap} from 'rxjs/operators';
-import {InMemoryCache} from 'apollo-cache-inmemory';
-import {NetworkStatus} from 'apollo-client';
 
-import {Apollo, ApolloBase} from '../src/Apollo';
+import {
+  Apollo,
+  ApolloBase,
+  gql,
+  ApolloLink,
+  NetworkStatus,
+  InMemoryCache,
+} from '../src';
 import {ZoneScheduler} from '../src/utils';
 import {mockSingleLink} from './mocks/mockLinks';
 
@@ -633,79 +635,123 @@ describe('Apollo', () => {
     });
   });
 
-  test('should use HttpClient', async(
-    inject([Apollo], (apollo: Apollo) => {
-      const op = {
-        query: gql`
-          query heroes {
-            heroes {
-              name
-              __typename
-            }
+  test('should use HttpClient', () => {
+    const apollo: Apollo = TestBed.get(Apollo);
+    const op = {
+      query: gql`
+        query heroes {
+          heroes {
+            name
+            __typename
           }
-        `,
-        variables: {},
-      };
-      const data = {
-        heroes: [
-          {
-            name: 'Superman',
-            __typename: 'Hero',
-          },
-        ],
-      };
-
-      // create
-      apollo.create<any>({
-        link: mockSingleLink({request: op, result: {data}}),
-        cache: new InMemoryCache(),
-      });
-
-      // query
-      apollo.query<any>(op).subscribe({
-        next: result => {
-          expect(result.data).toMatchObject(data);
+        }
+      `,
+      variables: {},
+    };
+    const data = {
+      heroes: [
+        {
+          name: 'Superman',
+          __typename: 'Hero',
         },
-        error: e => {
-          throw new Error(e);
-        },
-      });
-    }),
-  ));
+      ],
+    };
 
-  test('should useInitialLoading', async(
-    inject([Apollo], (apollo: Apollo) => {
-      const op = {
-        query: gql`
-          query heroes {
-            heroes {
-              name
-              __typename
-            }
+    // create
+    apollo.create<any>({
+      link: mockSingleLink({request: op, result: {data}}),
+      cache: new InMemoryCache(),
+    });
+
+    // query
+    apollo.query<any>(op).subscribe({
+      next: result => {
+        expect(result.data).toMatchObject(data);
+      },
+      error: e => {
+        throw new Error(e);
+      },
+    });
+  });
+
+  test('should emit a result, not a loading state first by default (deprecated)', () => {
+    const op = {
+      query: gql`
+        query heroes {
+          heroes {
+            name
+            __typename
           }
-        `,
-        variables: {},
+        }
+      `,
+      variables: {},
+    };
+    const data = {
+      heroes: [
+        {
+          name: 'Superman',
+          __typename: 'Hero',
+        },
+      ],
+    };
+
+    const apollo: Apollo = TestBed.get(Apollo);
+
+    // create
+    apollo.create<any>({
+      link: mockSingleLink({request: op, result: {data}}),
+      cache: new InMemoryCache(),
+    });
+
+    // query
+    apollo.watchQuery<any>(op).valueChanges.subscribe({
+      next: result => {
+        expect(result.data).toMatchObject(data);
+      },
+      error: e => {
+        throw new Error(e);
+      },
+    });
+  });
+
+  test('should useInitialLoading', () => {
+    const op = {
+      query: gql`
+        query heroes {
+          heroes {
+            name
+            __typename
+          }
+        }
+      `,
+      variables: {},
+    };
+    const data = {
+      heroes: [
+        {
+          name: 'Superman',
+          __typename: 'Hero',
+        },
+      ],
+    };
+
+    let alreadyCalled = false;
+
+    const apollo: Apollo = TestBed.get(Apollo);
+
+    // create
+    apollo.create<any>({
+      link: mockSingleLink({request: op, result: {data}}),
+      cache: new InMemoryCache(),
+    });
+
+    // query
+    apollo
+      .watchQuery<any>({
+        ...op,
         useInitialLoading: true,
-      };
-      const data = {
-        heroes: [
-          {
-            name: 'Superman',
-            __typename: 'Hero',
-          },
-        ],
-      };
-
-      let alreadyCalled = false;
-
-      // create
-      apollo.create<any>({
-        link: mockSingleLink({request: op, result: {data}}),
-        cache: new InMemoryCache(),
-      });
-
-      // query
-      apollo.watchQuery<any>(op).valueChanges.subscribe({
+      })
+      .valueChanges.subscribe({
         next: result => {
           if (alreadyCalled) {
             expect(result.data).toMatchObject(data);
@@ -718,8 +764,7 @@ describe('Apollo', () => {
           throw new Error(e);
         },
       });
-    }),
-  ));
+  });
 
   test('should remove default client', () => {
     const apollo = mockApollo(mockSingleLink(), ngZone);

@@ -10,8 +10,7 @@ GitHunt uses `Apollo` and calls `query` method as soon as the user hovers over a
 With the data prefetched, the comments page renders immediately, and the user often experiences no delay at all:
 
 ```ts
-import { Apollo } from 'apollo-angular';
-import gql from 'graphql-tag';
+import { Apollo, gql } from 'apollo-angular';
 
 @Component({
   template: `

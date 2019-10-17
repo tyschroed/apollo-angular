@@ -2,9 +2,8 @@ import {setupAngular} from './_setup';
 
 import {Injectable} from '@angular/core';
 import {TestBed, inject} from '@angular/core/testing';
-import gql from 'graphql-tag';
 
-import {Query, Apollo} from '../src';
+import {Query, Apollo, gql} from '../src';
 
 const query = gql`
   query heroes {

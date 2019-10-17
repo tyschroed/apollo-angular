@@ -19,9 +19,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 // Apollo
-import { ApolloModule, Apollo } from 'apollo-angular';
-import { HttpLinkModule, HttpLink } from 'apollo-angular-link-http';
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ApolloModule, Apollo, HttpLinkModule, HttpLink, InMemoryCache } from 'apollo-angular';
 
 @NgModule({
   imports: [
@@ -56,7 +54,7 @@ You can render your entire Angular-based Apollo application on a Node server the
 
 No changes are required to client queries to support this, so your Apollo-based Angular UI should support SSR out of the box.
 
-> SSR works out of the box when using `HttpLink` from `apollo-angular-link-http` because it uses Angular's `HttpClient` internally.
+> SSR works out of the box when using `HttpLink` because it uses Angular's `HttpClient` internally.
 > This would't be that easy with `apollo-link-http`. That non-angular Link uses Fetch API which would have to schedule a macroTask (Zone.js) so Angular could wait for the request to finish.
 
 ## Store rehydration
@@ -71,9 +69,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule, BrowserTransferStateModule, TransferState, makeStateKey } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 // Apollo
-import { ApolloModule, Apollo } from 'apollo-angular';
-import { HttpLinkModule, HttpLink } from 'apollo-angular-link-http';
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ApolloModule, Apollo, HttpLinkModule, HttpLink, InMemoryCache } from 'apollo-angular';
 
 const STATE_KEY = makeStateKey<any>('apollo.state');
 
@@ -221,7 +217,7 @@ apollo.create({
 
 ## Http Caching
 
-As you know, `HttpLink` from `apollo-angular-link-http` package uses Angular's `HttpClient` to make requests. Thanks to that and `@nguniversal/common` it is super easy to make SSR working without even writing a single line of code.
+As you know, `HttpLink` uses Angular's `HttpClient` to make requests. Thanks to that and `@nguniversal/common` it is super easy to make SSR working without even writing a single line of code.
 
 `TransferHttpCacheModule`, which is a part of `@nguniversal/common`, intercepts `HttpClient` requests on the server and store the response in the `TransferState` key-value store. This is transferred to the client, which then uses it to respond to the same `HttpClient` requests on the client.
 
@@ -233,9 +229,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 // SSR
 import { TransferHttpCacheModule } from '@nguniversal/common';
-import { ApolloModule, Apollo } from 'apollo-angular';
-import { HttpLinkModule, HttpLink } from 'apollo-angular-link-http';
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ApolloModule, Apollo, HttpLinkModule, HttpLink, InMemoryCache } from 'apollo-angular';
 
 @NgModule({
   imports: [

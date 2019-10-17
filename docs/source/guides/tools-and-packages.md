@@ -11,25 +11,21 @@ An Apollo Link to allow sending a single http request per operation. It's based 
 
 Why not `apollo-link-http`? You get SSR for free, ability to use Http Interceptors and easier testing.
 
-[Read documentation](https://www.npmjs.com/package/apollo-angular-link-http)
-
-```bash
-yarn add apollo-angular-link-http
+```typescript
+import { HttpLink } from 'apollo-angular';
 ```
 
 ## Http Batching Link
 
 An Apollo Link to combine multiple GraphQL operations into single HTTP request.
 
-[Read documentation](https://www.npmjs.com/package/apollo-angular-link-http-batch)
-
-```bash
-yarn add apollo-angular-link-http-batch
+```typescript
+import { HttpBatchLink } from 'apollo-angular';
 ```
 
 ## Persisted Queries
 
-An Apollo Link that allows to use [Automatic Persisted Queries](https://blog.apollographql.com/improve-graphql-performance-with-automatic-persisted-queries-c31d27b8e6ea) with `apollo-angular-link-http`.
+An Apollo Link that allows to use [Automatic Persisted Queries](https://blog.apollographql.com/improve-graphql-performance-with-automatic-persisted-queries-c31d27b8e6ea) with `apollo-angular`.
 
 [Read documentation](https://www.npmjs.com/package/apollo-angular-link-persisted)
 

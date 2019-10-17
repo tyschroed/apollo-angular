@@ -10,13 +10,12 @@ Apollo Client has a pluggable network interface layer, which can let you configu
 
 ### Using an link
 
-To create a link to use with Apollo Client, you can install and import one from npm or create your own. We recommend using `apollo-angular-link-http` for most setups!
+To create a link to use with Apollo Client, you can install and import one from npm or create your own. We recommend using `HttpLink` for most setups!
 
 First, you need to import Module for each package:
 
 ```ts
-import { ApolloModule } from 'apollo-angular';
-import { HttpLinkModule } from 'apollo-angular-link-http';
+import { ApolloModule, HttpLinkModule } from 'apollo-angular';
 
 @NgModule({
   imports: [
@@ -33,8 +32,7 @@ Since the example runs in browser, we are going to use `HttpClientModule` from `
 
 ```ts
 import { HttpClientModule } from '@angular/common/http';
-import { ApolloModule } from 'apollo-angular';
-import { HttpLinkModule } from 'apollo-angular-link-http';
+import { ApolloModule, HttpLinkModule } from 'apollo-angular';
 
 @NgModule({
   imports: [
@@ -50,8 +48,7 @@ Since Angular has now access to Apollo related services, here's how you would in
 
 ```ts
 import { HttpClientModule } from '@angular/common/http';
-import { ApolloModule, Apollo } from 'apollo-angular';
-import { HttpLinkModule, HttpLink } from 'apollo-angular-link-http';
+import { ApolloModule, Apollo, HttpLinkModule, HttpLink } from 'apollo-angular';
 
 @NgModule({
   imports: [
@@ -78,8 +75,7 @@ class AppModule {
 And if you needed to pass additional options to [`HttpClient`](https://angular.io/api/common/http/HttpClient):
 
 ```ts
-import { Apollo } from 'apollo-angular';
-import { HttpLink } from 'apollo-angular-link-http';
+import { Apollo, HttpLink } from 'apollo-angular';
 
 @NgModule({ ... })
 class AppModule {
@@ -108,9 +104,7 @@ Apollo Link is designed from day one to be easy to use middleware on your reques
 The following examples shows how you'd create a middleware. In both examples, we'll show how you would add an authentication token to the HTTP header of the requests being sent by the client.
 
 ```js
-import { Apollo } from 'apollo-angular';
-import { HttpLink } from 'apollo-angular-link-http';
-import { ApolloLink, concat } from 'apollo-link';
+import { Apollo, HttpLink, ApolloLink, concat } from 'apollo-angular';
 import { HttpHeaders } from '@angular/common/http';
 
 @NgModule({ ... })
@@ -143,9 +137,7 @@ The above example shows the use of a single middleware joined with the HttpLink.
 The following example shows the use of multiple middlewares passed as an array:
 
 ```ts
-import { Apollo } from 'apollo-angular';
-import { HttpLink } from 'apollo-angular-link-http';
-import { ApolloLink } from 'apollo-link';
+import { Apollo, HttpLink, ApolloLink } from 'apollo-angular';
 
 @NgModule({ ... })
 class AppModule {
@@ -194,8 +186,7 @@ Much like middlewares, Apollo Link was designed to make afterwares easy and powe
 The following example demonstrates how to implement an afterware function.
 
 ```ts
-import { Apollo } from 'apollo-angular';
-import { HttpLink } from 'apollo-angular-link-http';
+import { Apollo, HttpLink } from 'apollo-angular';
 import { onError } from 'apollo-link-error'
 
 import { Auth } from './auth';
@@ -244,4 +235,4 @@ For more information about using WebSocket's with Apollo Link, check out the [in
 
 ### Query Batching
 
-Apollo lets you automatically batch multiple queries into one request when they are made within a certain interval. This means that if you render several components, for example a navbar, sidebar, and content, and each of those do their own GraphQL query, they will all be sent in one roundtrip. Batching works only with server that support batched queries (for example graphql-server). Batched requests to servers that don’t support batching will fail. To learn how to use batching with Apollo checkout the [indepth guide](https://github.com/apollographql/apollo-angular/tree/master/packages/apollo-angular-link-http-batch)
+Apollo lets you automatically batch multiple queries into one request when they are made within a certain interval. This means that if you render several components, for example a navbar, sidebar, and content, and each of those do their own GraphQL query, they will all be sent in one roundtrip. Batching works only with server that support batched queries (for example graphql-server). Batched requests to servers that don’t support batching will fail. To learn how to use batching with Apollo checkout the [indepth guide](https://github.com/apollographql/apollo-angular/tree/master/packages/apollo-angular/src/http-batch)

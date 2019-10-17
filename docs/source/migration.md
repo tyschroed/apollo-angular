@@ -39,7 +39,7 @@ The goal of the `1.0` launch is to improve the experience of using it in Angular
 
 One of the largest changes with the new version is the breaking apart of the monolith `apollo-client` package into a few small, but isolated modules. This gives way more flexibility, but does require more packages to install.
 
-To get started with the 2.0, you will change your imports from either `apollo-angular`, or just `apollo-client` to use the new packages. A typical upgrade looks like this:
+To get started with the 2.0, you will change your imports from `apollo-angular` to use the new packages. A typical upgrade looks like this:
 
 **Before**
 
@@ -52,11 +52,7 @@ import gql from 'graphql-tag';
 **After**
 
 ```ts
-import { ApolloClient } from 'apollo-client';
-import { ApolloModule } from 'apollo-angular';
-import { HttpLink } from 'apollo-angular-link-http';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import gql from 'graphql-tag';
+import { ApolloModule, ApolloClient, HttpLink, InMemoryCache, gql } from 'apollo-angular';
 ```
 
 ### Basic updates
@@ -92,9 +88,7 @@ class AppModule {}
 ```js
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { HttpLinkModule, HttpLink } from 'apollo-angular-link-http';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { ApolloModule, Apollo } from 'apollo-angular';
+import { ApolloModule, Apollo, HttpLinkModule, HttpLink, InMemoryCache } from 'apollo-angular';
 
 @NgModule({
   imports: [
@@ -171,10 +165,7 @@ const client = new ApolloClient({
 **After**
 
 ```ts
-import { Apollo } from 'apollo-angular';
-import { ApolloLink } from 'apollo-link';
-import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
-import { HttpLink } from 'apollo-angular-link-http';
+import { Apollo, InMemoryCache, IntrospectionFragmentMatcher, HttpLink } from 'apollo-angular';
 
 class AppModule {
   constructor(
@@ -228,9 +219,7 @@ const state = client.getInitialState();
 **After**
 
 ```ts
-import { ApolloClient } from 'apollo-client';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { HttpLink } from 'apollo-angular-link-http';
+import { HttpLink, InMemoryCache } from 'apollo-angular';
 
 class AppModule {
   constructor(
@@ -278,7 +267,7 @@ networkInterface.use([{
 
 ```ts
 import { setContext } from 'apollo-link-context';
-import { HttpLink } from 'apollo-angular-link-http';
+import { HttpLink } from 'apollo-angular';
 
 class AppModule {
   constructor(httpLink: HttpLink) {
@@ -317,7 +306,7 @@ networkInterface.useAfter([{
 **After**
 
 ```ts
-import { HttpLink } from 'apollo-angular-link-http';
+import { HttpLink } from 'apollo-angular';
 import { onError } from 'apollo-link-error';
 
 import { logout } from './logout';
@@ -360,8 +349,7 @@ networkInterface.useAfter([{
 **After**
 
 ```ts
-import { ApolloLink } from 'apollo-link';
-import { httpLink } from 'apollo-angular-link-http';
+import { HttpLink, ApolloLink } from 'apollo-angular';
 
 class AppModule {
   constructor(httpLink: HttpLink) {
@@ -388,7 +376,7 @@ For more information on using Apollo Links, check out the [link docs!](https://w
 The 2.0 moves away from using Redux as the caching layer in favor of Apollo maintaining its own store through the provided `cache` passed when creating a client. This allows the new version to be more flexible around how data is cached, and opens the storage of data to many new avenues and view integrations. If you were previously using the Redux integration to do something like logging, you can now use an Apollo Link to log whenever a request is sent to the server. For example:
 
 ```js
-import { ApolloLink } from 'apollo-link';
+import { ApolloLink } from 'apollo-angular';
 
 const logger = new ApolloLink((operation, forward) => {
   console.log(operation.operationName);
