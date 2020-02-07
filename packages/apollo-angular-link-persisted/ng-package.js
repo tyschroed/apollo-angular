@@ -8,7 +8,7 @@ module.exports = {
     umdModuleIds,
   },
   whitelistedNonPeerDependencies: [
-    'apollo-link-context',
-    'apollo-link-persisted-queries',
+    '@apollo/link-context',
+    '@apollo/link-persisted-queries',
   ],
 };

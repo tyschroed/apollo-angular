@@ -1,10 +1,10 @@
 import {DocumentNode} from 'graphql';
 import {ApolloLink} from '@apollo/client/core';
-import {setContext} from 'apollo-link-context';
+import {setContext} from '@apollo/link-context';
 import {
   createPersistedQueryLink as _createPersistedQueryLink,
   ErrorResponse,
-} from 'apollo-link-persisted-queries';
+} from '@apollo/link-persisted-queries';
 
 export interface Options {
   generateHash?: (document: DocumentNode) => string;
